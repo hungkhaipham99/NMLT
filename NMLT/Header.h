@@ -2,6 +2,7 @@
 #include <conio.h>
 #include <Windows.h>
 #include <string.h>
+#include<iostream>
 using namespace std;
 
 #define BOARD_SIZE 12 // Kích thức ma trận bàn cờ
@@ -10,9 +11,11 @@ using namespace std;
 // Khai báo kiểu dữ liệu
 struct _POINT { int x, y, c; }; // x: tọa độ dòng, y: tọa độ cột, c: đánh dấu
 _POINT _A[BOARD_SIZE][BOARD_SIZE]; //Ma trận bàn cờ
+_POINT New;
 bool _TURN; //true là lượt người thứ nhất và false là lượt người thứ hai
 int _COMMAND; // Biến nhận giá trị phím người dùng nhập
 int _X, _Y; //Tọa độ hiện hành trên màn hình bàn cờ
+int _COUNT = 0;
 
 
 void FixConsoleWindow();
@@ -31,3 +34,4 @@ void MoveDown();
 
 void MoveUp();
 int TestBoard();
+bool IsWin(_POINT a);

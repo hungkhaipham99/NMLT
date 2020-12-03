@@ -1,9 +1,2 @@
-﻿  Source.cpp
-  main.cpp
-  Generating Code...
-Source.obj : error LNK2005: "struct _POINT (* _A)[12]" (?_A@@3PAY0M@U_POINT@@A) already defined in main.obj
-Source.obj : error LNK2005: "bool _TURN" (?_TURN@@3_NA) already defined in main.obj
-Source.obj : error LNK2005: "int _COMMAND" (?_COMMAND@@3HA) already defined in main.obj
-Source.obj : error LNK2005: "int _X" (?_X@@3HA) already defined in main.obj
-Source.obj : error LNK2005: "int _Y" (?_Y@@3HA) already defined in main.obj
-C:\Users\hungkhaipham\Documents\Visual Studio 2019\project\NMLT\Debug\NMLT.exe : fatal error LNK1169: one or more multiply defined symbols found
+﻿  main.cpp
+  NMLT.vcxproj -> C:\Users\hungkhaipham\Documents\Visual Studio 2019\project\NMLT\Debug\NMLT.exe

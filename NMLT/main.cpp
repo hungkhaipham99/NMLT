@@ -25,6 +25,47 @@ void GotoXY(int x, int y) {
 
 }
 
+
+bool IsWin() {
+	int count = 0;
+	int t = New.x - 4, k = New.y - 4;
+	if (t < 0)t = 0;
+	if (k < 0)k = 0;
+	for (int i = t; i <= New.x + 4; i++)
+	{
+
+		if (_A[i][New.y].c == New.c) count += 1;
+		else
+		{
+			count = 0;
+		}
+		if (count == 5 && _A[i + 1][New.y].c != New.c && (_A[i - 5][New.y].c == 0 || _A[i + 1][New.y].c == 0)) return true;
+
+	}
+
+	for (int i = k; i <= New.y + 4; i++)
+	{
+
+		if (_A[New.x][i].c == New.c) count += 1;
+		else
+		{
+			count = 0;
+		}
+		if (count == 5 && _A[New.x][i + 1].c != New.c && (_A[New.x][i - 5].c == 0 || _A[New.x][i + 1].c == 0)) return true;
+	}
+
+	for (int i = -4; i <=4; i++)
+	{
+		if (_A[New.x+i][New.y+i].c == New.c) count += 1;
+		else
+		{
+			count = 0;
+		}
+		if (count == 5 && _A[New.x + i+1][New.y + i+1].c != New.c && (_A[New.x + i-5][New.y + i-5].c == 0 || _A[New.x + i+1][New.y + i+1].c == 0)) return true;
+	}
+	return false;
+}
+
 void DrawBoard(int pSize) {
 
 	for (int i = 0; i <= pSize; i++) {
@@ -128,7 +169,22 @@ void ExitGame() {
 
 int TestBoard()
 {
-	return 1;
+	
+	if (_COUNT==BOARD_SIZE*BOARD_SIZE) {
+		return 0;
+	}
+	else
+	{
+
+		if (IsWin() == true)
+		{
+			
+			cout << "A[][]: " << _A[0][0].c;
+			return (_TURN == true ? -1 : 1);
+		}
+		else return 2;
+
+	}
 }
 //int TestBoard()
 //{
@@ -153,6 +209,9 @@ int CheckBoard(int pX, int pY) {
 			if (_A[i][j].x == pX && _A[i][j].y == pY && _A[i][j].c == 0) {
 				if (_TURN == true) _A[i][j].c = -1; // Nếu lượt hiện hành là true thì c = -1
 				else _A[i][j].c = 1; // Nếu lượt hiện hành là false thì c = 1
+				New.c = _A[i][j].c;
+				New.x = i;
+				New.y = j;
 				return _A[i][j].c;
 
 			}
@@ -235,7 +294,6 @@ int main()
 				switch (CheckBoard(_X, _Y)) {
 
 				case -1:
-
 					printf("X"); break;
 
 				case 1:
@@ -245,7 +303,7 @@ int main()
 				}
 				// Tiếp theo là kiểm tra và xử lý thắng/thua/hòa/tiếp tục
 				if (validEnter == true) {
-
+					_COUNT++;
 					switch (ProcessFinish(TestBoard())) {
 
 					case -1: case 1: case 0:
