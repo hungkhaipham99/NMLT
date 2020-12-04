@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <string.h>
 #include<iostream>
+#include <fstream>
 using namespace std;
 
 #define BOARD_SIZE 12 // Kích thức ma trận bàn cờ
@@ -34,4 +35,6 @@ void MoveDown();
 
 void MoveUp();
 int TestBoard();
-bool IsWin(_POINT a);
+bool IsWin();
+void SaveGame(string a);
+void LoadGame(string a);

@@ -155,7 +155,7 @@ void StartGame() {
 	ResetData(); // Khởi tạo dữ liệu gốc
 
 	DrawBoard(BOARD_SIZE); // Vẽ màn hình game
-
+	LoadGame("Game");
 }
 
 void GabageCollect()
@@ -166,6 +166,8 @@ void GabageCollect()
 
 }
 
+
+
 //Hàm thoát game (hàm nhóm Control)
 
 void ExitGame() {
@@ -173,27 +175,23 @@ void ExitGame() {
 	system("cls");
 
 	GabageCollect();
+	SaveGame("Game");
 	//Có thể lưu game trước khi exit
 
 }
 
 int TestBoard()
-{
-	
+{	
 	if (_COUNT==BOARD_SIZE*BOARD_SIZE) {
 		return 0;
 	}
 	else
 	{
-
 		if (IsWin() == true)
-		{
-			
-			cout << "A[][]: " << _A[0][0].c;
+		{			
 			return (_TURN == true ? -1 : 1);
 		}
 		else return 2;
-
 	}
 }
 //int TestBoard()
@@ -271,7 +269,45 @@ void MoveUp() {
 	}
 
 }
+void SaveGame(string name)
+{
+	fstream f;
+	f.open(name + ".txt", ios::out);
+	for (int i = 0; i < BOARD_SIZE; i++) {
+		for (int j = 0; j < BOARD_SIZE; j++) {
+			f.write(reinterpret_cast<char*>(&_A[i][j]), sizeof(_POINT));
+			
+		}
+	}
+	f.close();
+}
 
+void LoadGame(string name)
+{
+	fstream f;
+	f.open(name + ".txt", ios::in);
+	for (int i = 0; i < BOARD_SIZE; i++) {
+		for (int j = 0; j < BOARD_SIZE; j++) {
+			f.read(reinterpret_cast<char*>(&_A[i][j]), sizeof(_POINT));
+			GotoXY(_A[i][j].x, _A[i][j].y);
+			if (_A[i][j].c == -1)
+			{
+				printf("X");
+			}
+			if (_A[i][j].c == 1)
+			{
+				printf("O");
+			}
+		}
+	}
+	f.close();
+	
+}
+
+void MenuGame()
+{
+
+}
 
 
 
