@@ -63,6 +63,16 @@ bool IsWin() {
 		}
 		if (count == 5 && _A[New.x + i+1][New.y + i+1].c != New.c && (_A[New.x + i-5][New.y + i-5].c == 0 || _A[New.x + i+1][New.y + i+1].c == 0)) return true;
 	}
+
+	for (int i = 4; i >=-4; i--)
+	{
+		if (_A[New.x + i][New.y - i].c == New.c) count += 1;
+		else
+		{
+			count = 0;
+		}
+		if (count == 5 && _A[New.x + i - 1][New.y - i + 1].c != New.c && _A[New.x + i + 5][New.y - i - 5].c!=New.c&&(_A[New.x + i + 5][New.y - i - 5].c == 0 || _A[New.x + i - 1][New.y - i + 1].c == 0)) return true;
+	}
 	return false;
 }
 
