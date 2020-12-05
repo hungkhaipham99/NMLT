@@ -16,7 +16,14 @@ _POINT New;
 bool _TURN; //true là lượt người thứ nhất và false là lượt người thứ hai
 int _COMMAND; // Biến nhận giá trị phím người dùng nhập
 int _X, _Y; //Tọa độ hiện hành trên màn hình bàn cờ
-int _COUNT = 0;
+int _COUNT1 = 0;//Dem nuoc co nguoi choi 1;
+int _COUNT2 = 0;//Dem nuoc co nguoi choi 2;
+int Win1 = 0;//So lan thang cua nguoi choi 1
+int Win2 = 0;//So lan thang cua nguoi choi 2
+int flagLoad = 0;
+int flagWin = 0;
+string Name;
+
 
 
 void FixConsoleWindow();

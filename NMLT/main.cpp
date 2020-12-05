@@ -84,7 +84,7 @@ void DrawBoard(int pSize) {
 
 			GotoXY(LEFT + 4 * i, TOP + 2 * j);
 
-			printf(",");
+			printf(".");
 
 		}
 	}
@@ -119,15 +119,19 @@ int ProcessFinish(int pWhoWin) {
 	switch (pWhoWin) {
 
 	case -1:
-
+		Win1++;
 		printf("Nguoi choi %d da thang va nguoi choi %d da thua\n", true, false);
-
+		flagLoad = 0;
+		flagWin = 1;
+		SaveGame(Name);
 		break;
 
 	case 1:
-
+		Win2++;
 		printf("Nguoi choi %d da thang va nguoi choi %d da thua\n", false, true);
-
+		flagLoad = 0;
+		flagWin = 1;
+		SaveGame(Name);
 		break;
 	case 0:
 		printf("Nguoi choi %d da hoa nguoi choi %d\n", false, true);
@@ -155,7 +159,7 @@ void StartGame() {
 	ResetData(); // Khởi tạo dữ liệu gốc
 
 	DrawBoard(BOARD_SIZE); // Vẽ màn hình game
-	LoadGame("Game");
+	//LoadGame("Game");
 }
 
 void GabageCollect()
@@ -175,20 +179,20 @@ void ExitGame() {
 	system("cls");
 
 	GabageCollect();
-	SaveGame("Game");
+	//SaveGame("Game");
 	//Có thể lưu game trước khi exit
 
 }
 
 int TestBoard()
 {	
-	if (_COUNT==BOARD_SIZE*BOARD_SIZE) {
+	if (_COUNT1+ _COUNT2==BOARD_SIZE*BOARD_SIZE) {
 		return 0;
 	}
 	else
 	{
 		if (IsWin() == true)
-		{			
+		{	
 			return (_TURN == true ? -1 : 1);
 		}
 		else return 2;
@@ -273,19 +277,29 @@ void SaveGame(string name)
 {
 	fstream f;
 	f.open(name + ".txt", ios::out);
-	for (int i = 0; i < BOARD_SIZE; i++) {
-		for (int j = 0; j < BOARD_SIZE; j++) {
-			f.write(reinterpret_cast<char*>(&_A[i][j]), sizeof(_POINT));
-			
+	f.write(reinterpret_cast<char*>(&Win1), sizeof(int));
+	f.write(reinterpret_cast<char*>(&Win2), sizeof(int));
+	if (flagWin != 1)
+	{
+		f.write(reinterpret_cast<char*>(&_TURN), sizeof(bool));
+		for (int i = 0; i < BOARD_SIZE; i++) {
+			for (int j = 0; j < BOARD_SIZE; j++) {
+				f.write(reinterpret_cast<char*>(&_A[i][j]), sizeof(_POINT));
+
+			}
 		}
 	}
 	f.close();
+	cout << "Da luu";
 }
 
 void LoadGame(string name)
 {
 	fstream f;
 	f.open(name + ".txt", ios::in);
+	f.read(reinterpret_cast<char*>(&Win1), sizeof(int));
+	f.read(reinterpret_cast<char*>(&Win2), sizeof(int));
+	f.read(reinterpret_cast<char*>(&_TURN), sizeof(bool));
 	for (int i = 0; i < BOARD_SIZE; i++) {
 		for (int j = 0; j < BOARD_SIZE; j++) {
 			f.read(reinterpret_cast<char*>(&_A[i][j]), sizeof(_POINT));
@@ -301,7 +315,6 @@ void LoadGame(string name)
 		}
 	}
 	f.close();
-	
 }
 
 void MenuGame()
@@ -336,20 +349,34 @@ int main()
 			else if (_COMMAND == 'W') MoveUp();
 			else if (_COMMAND == 'S') MoveDown();
 			else if (_COMMAND == 'D') MoveRight();
+			else if (_COMMAND == 'L')
+			{
+				if (flagLoad != 1) {
+					cout << "Nhap ten tap tin muon luu: ";
+					cin >> Name;
+				}
+				SaveGame(Name);
+			}
+			else if (_COMMAND == 'T') {
+				cout << "Nhap ten tap tin muon tai len: ";
+				cin >> Name;
+				LoadGame(Name);
+				flagLoad = 1;
+			}
 			else if (_COMMAND == 13) {// Người dùng đánh dấu trên màn hình bàn cờ
 				switch (CheckBoard(_X, _Y)) {
 
 				case -1:
-					printf("X"); break;
-
+					printf("X"); _COUNT1++; break;
+					
 				case 1:
-					printf("O"); break;
+					printf("O"); _COUNT2++; break;
 				case 0: validEnter = false; // Khi đánh vào ô đã đánh rồi
 
 				}
 				// Tiếp theo là kiểm tra và xử lý thắng/thua/hòa/tiếp tục
 				if (validEnter == true) {
-					_COUNT++;
+					
 					switch (ProcessFinish(TestBoard())) {
 
 					case -1: case 1: case 0:
