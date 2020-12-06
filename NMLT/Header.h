@@ -23,7 +23,7 @@ int Win2 = 0;//So lan thang cua nguoi choi 2
 int flagLoad = 0;//Kiem tra game moi hay game cu
 int flagWin = 0;//Thay doi luu tru khi thang game
 string Name;
-
+int ViTriIn = 13;
 
 
 void FixConsoleWindow();
@@ -45,3 +45,8 @@ int TestBoard();
 bool IsWin();
 void SaveGame(string a);
 void LoadGame(string a);
+void GtxtColor(int x);
+void printMenu(int selection);
+int selectMenu();
+int NewGame();
+int OldGame();

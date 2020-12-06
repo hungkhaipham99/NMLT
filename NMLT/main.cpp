@@ -2,15 +2,10 @@
 
 
 void FixConsoleWindow() {
-
 	HWND consoleWindow = GetConsoleWindow();
-
 	LONG style = GetWindowLong(consoleWindow, GWL_STYLE);
-
 	style = style & ~(WS_MAXIMIZEBOX) & ~(WS_THICKFRAME);
-
 	SetWindowLong(consoleWindow, GWL_STYLE, style);
-
 }
 
 void GotoXY(int x, int y) {
@@ -33,14 +28,12 @@ bool IsWin() {
 	if (k < 0)k = 0;
 	for (int i = t; i <= New.x + 4; i++)
 	{
-
 		if (_A[i][New.y].c == New.c) count += 1;
 		else
 		{
 			count = 0;
 		}
 		if (count == 5 && _A[i + 1][New.y].c != New.c && (_A[i - 5][New.y].c == 0 || _A[i + 1][New.y].c == 0)) return true;
-
 	}
 
 	for (int i = k; i <= New.y + 4; i++)
@@ -101,7 +94,6 @@ void ResetData() {
 
 			_A[i][j].c = 0; // 0 nghĩa là chưa ai đánh dấu, nếu đánh dấu phải theo quy
 			//định như sau: -1 là lượt true đánh, 1 là lượt false đánh
-
 		}
 
 	}
@@ -150,7 +142,6 @@ int AskContinue() {
 	printf("Nhan 'y/n' de tiep tuc/dung: ");
 	return toupper(_getch());
 }
-
 
 void StartGame() {
 
@@ -290,6 +281,7 @@ void SaveGame(string name)
 		}
 	}
 	f.close();
+	GotoXY(52, ViTriIn);
 	cout << "Da luu";
 }
 
@@ -317,25 +309,135 @@ void LoadGame(string name)
 	f.close();
 }
 
-void MenuGame()
-{
-
+void GtxtColor(int x) {
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), x);
 }
 
+void printMenu(int selection)
+{
+	switch (selection)
+	{
+	case 1:
+		GotoXY(52, 18);
+		GtxtColor(12);
+		cout << "NEW GAME";
+		GotoXY(0, 19);
+		GtxtColor(11);
+		cout << "\t\t\t\t\t*\t    LOAD GAME             *";
+		GotoXY(0, 20);
+		GtxtColor(11);
+		cout << "\t\t\t\t\t*\t    HELP                  *";
+		GotoXY(0, 21);
+		GtxtColor(11);
+		cout << "\t\t\t\t\t*\t    ABOUT                 *";
+		GotoXY(0, 22);
+		GtxtColor(11);
+		cout << "\t\t\t\t\t*\t    EXIT GAME             *";
+		break;
+	case 2:
+		GotoXY(0, 18);
+		GtxtColor(11);
+		cout << "\t\t\t\t\t*\t    NEW GAME              *";
+		GotoXY(52, 19);
+		GtxtColor(12);
+		cout << "LOAD GAME";
+		GotoXY(0, 20);
+		GtxtColor(11);
+		cout << "\t\t\t\t\t*\t    HELP                  *";
+		GotoXY(0, 24);
+		break;
+	case 3:
+		GotoXY(0, 19);
+		GtxtColor(11);
+		cout << "\t\t\t\t\t*\t    LOAD GAME             *";
+		GotoXY(52, 20);
+		GtxtColor(12);
+		cout << "HELP";
+		GotoXY(0, 21);
+		GtxtColor(11);
+		cout << "\t\t\t\t\t*\t    ABOUT                 *";
+		GotoXY(0, 24);
+		break;
+	case 4:
+		GotoXY(0, 20);
+		GtxtColor(11);
+		cout << "\t\t\t\t\t*\t    HELP                  *";
+		GotoXY(52, 21);
+		GtxtColor(12);
+		cout << "ABOUT";
+		GotoXY(0, 22);
+		GtxtColor(11);
+		cout << "\t\t\t\t\t*\t    EXIT GAME             *";
+		GotoXY(0, 24);
+		break;
+	case 5:
+		GotoXY(0, 21);
+		GtxtColor(11);
+		cout << "\t\t\t\t\t*\t    ABOUT                 *";
+		GotoXY(52, 22);
+		GtxtColor(12);
+		cout << "EXIT GAME";
+		GotoXY(0, 18);
+		GtxtColor(11);
+		cout << "\t\t\t\t\t*\t    NEW GAME              *";
+		GotoXY(0, 24);
+		break;
+	}
+}
 
+int selectMenu()
+{
+	int selection = 1;
+	int choose = 0;
+	printMenu(selection);
+	while (1)
+	{
+		int move = _getch();
+		move = toupper(move);
+		if (move == 'S' || move == 80)
+		{
+			switch (selection)
+			{
+			case 1: case 2: case 3: case 4:
+				selection++;
+				break;
+			case 5:
+				selection = 1;
+				break;
+			}
+			
+			printMenu(selection);
 
-int main()
+		}
+		if (move == 'W' || move == 72)
+		{
+			switch (selection)
+			{
+			case 1:
+				selection = 5;
+				break;
+			case 2: case 3: case 4: case 5:
+				selection--;
+				break;
+			}
+			printMenu(selection);
+		}
+		if (move == 13)
+			return selection;
+	}
+}
+
+int NewGame()
 {
 	FixConsoleWindow();
 	StartGame();
 	bool validEnter = true;
-
 	while (1)
 
 	{
 
 		_COMMAND = toupper(_getch());
-
+		
 		if (_COMMAND == 27)
 
 		{
@@ -352,23 +454,31 @@ int main()
 			else if (_COMMAND == 'L')
 			{
 				if (flagLoad != 1) {
+					GotoXY(52, ViTriIn);
+					ViTriIn++;
 					cout << "Nhap ten tap tin muon luu: ";
 					cin >> Name;
 				}
 				SaveGame(Name);
 			}
-			else if (_COMMAND == 'T') {
+			else if (_COMMAND == 'T' || flagLoad==1) {
+				GotoXY(52, ViTriIn);
+				ViTriIn++;
 				cout << "Nhap ten tap tin muon tai len: ";
 				cin >> Name;
 				LoadGame(Name);
 				flagLoad = 1;
+				GotoXY(52, ViTriIn);
+				cout << "Da tai len";
 			}
 			else if (_COMMAND == 13) {// Người dùng đánh dấu trên màn hình bàn cờ
 				switch (CheckBoard(_X, _Y)) {
 
 				case -1:
-					printf("X"); _COUNT1++; break;
-					
+					printf("X"); _COUNT1++;
+					//cout << _X<<":" << _Y;
+					break;
+
 				case 1:
 					printf("O"); _COUNT2++; break;
 				case 0: validEnter = false; // Khi đánh vào ô đã đánh rồi
@@ -376,7 +486,7 @@ int main()
 				}
 				// Tiếp theo là kiểm tra và xử lý thắng/thua/hòa/tiếp tục
 				if (validEnter == true) {
-					
+
 					switch (ProcessFinish(TestBoard())) {
 
 					case -1: case 1: case 0:
@@ -400,3 +510,146 @@ int main()
 
 	}
 }
+
+int OldGame()
+{
+	FixConsoleWindow();
+	StartGame();
+	bool validEnter = true;
+	GotoXY(52, ViTriIn);
+	ViTriIn++;
+	cout << "Nhap ten tap tin muon tai len: ";
+	cin >> Name;
+	LoadGame(Name);
+	flagLoad = 1;
+	GotoXY(52, ViTriIn);
+	cout << "Da tai len";
+	while (1)
+
+	{
+
+		_COMMAND = toupper(_getch());
+		
+		if (_COMMAND == 27)
+
+		{
+			ExitGame();
+
+			return 0;
+
+		}
+		else {
+			if (_COMMAND == 'A') MoveLeft();
+			else if (_COMMAND == 'W') MoveUp();
+			else if (_COMMAND == 'S') MoveDown();
+			else if (_COMMAND == 'D') MoveRight();
+			else if (_COMMAND == 'L')
+			{
+				if (flagLoad != 1) {
+					GotoXY(52, ViTriIn);
+					ViTriIn++;
+					cout << "Nhap ten tap tin muon luu: ";
+					cin >> Name;
+				}
+				SaveGame(Name);
+			}
+			else if (_COMMAND == 'T') {
+				GotoXY(52, ViTriIn);
+				ViTriIn++;
+				cout << "Nhap ten tap tin muon tai len: ";
+				cin >> Name;
+				LoadGame(Name);
+				flagLoad = 1;
+				GotoXY(52, ViTriIn);
+				cout << "Da tai len";
+			}
+			else if (_COMMAND == 13) {// Người dùng đánh dấu trên màn hình bàn cờ
+				switch (CheckBoard(_X, _Y)) {
+
+				case -1:
+					printf("X"); _COUNT1++;
+					//cout << _X<<":" << _Y;
+					break;
+
+				case 1:
+					printf("O"); _COUNT2++; break;
+				case 0: validEnter = false; // Khi đánh vào ô đã đánh rồi
+
+				}
+				// Tiếp theo là kiểm tra và xử lý thắng/thua/hòa/tiếp tục
+				if (validEnter == true) {
+
+					switch (ProcessFinish(TestBoard())) {
+
+					case -1: case 1: case 0:
+						if (AskContinue() != 'Y') {
+
+							ExitGame();
+							return 0;
+
+						}
+
+						else StartGame();
+
+					}
+
+				}
+				validEnter = true; // Mở khóa
+
+			}
+
+		}
+
+	}
+}
+
+int main()
+{
+	while(1){
+		FixConsoleWindow();
+		GotoXY(0, 18);
+		GtxtColor(11);
+		cout << "\t\t\t\t\t*\t    NEW GAME              *" << endl;
+		cout << "\t\t\t\t\t*\t    LOAD GAME             *" << endl;
+		cout << "\t\t\t\t\t*\t    HELP                  *" << endl;
+		cout << "\t\t\t\t\t*\t    ABOUT                 *" << endl;
+		cout << "\t\t\t\t\t*\t    EXIT GAME             *" << endl;
+		cout << "\t\t\t\t\t***********************************" << endl;
+		int x = selectMenu();
+		switch (x)
+		{
+		case 1:
+			NewGame();
+			break;
+		case 2:
+			OldGame();
+			break;
+		case 3:
+			system("cls");
+			GtxtColor(14);
+			cout << "\t========TRONG GIAO DIEN TRO CHOI========" << endl;
+			GtxtColor(11);
+			cout << "\t1. Su dung cac phim W, A, S, D hoac cac phim mui ten de di chuyen." << endl;
+			GtxtColor(14);
+			cout << "\t2. Su dung phim Space hoac Enter de thuc hien 1 nuoc danh." << endl;
+			GtxtColor(11);
+			cout << "\t3. Su dung ESC de thoat khoi tro choi." << endl;
+			GtxtColor(14);
+			cout << "\t******************************************" << endl;
+			system("pause");
+			system("cls");
+			break;
+		case 4:
+			break;
+		case 5:
+			system("cls");
+			break;
+		default:
+			break;
+		}
+		if (x == 5) return 0;
+	}
+}
+
+
+
