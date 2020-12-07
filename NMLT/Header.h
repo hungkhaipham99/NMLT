@@ -50,3 +50,5 @@ void printMenu(int selection);
 int selectMenu();
 int NewGame();
 int OldGame();
+void Win_Lose();
+int AskSave();

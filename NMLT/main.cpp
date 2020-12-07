@@ -87,7 +87,7 @@ void ResetData() {
 	for (int i = 0; i < BOARD_SIZE; i++) {
 
 		for (int j = 0; j < BOARD_SIZE; j++) {
-
+			
 			_A[i][j].x = 4 * j + LEFT + 2; // Trùng với hoành độ màn hình bàn cờ
 
 			_A[i][j].y = 2 * i + TOP + 1; // Trùng với tung độ màn hình bàn cờ
@@ -99,7 +99,6 @@ void ResetData() {
 	}
 	_TURN = true; _COMMAND = -1; // Gán lượt và phím mặc định
 	_X = _A[0][0].x; _Y = _A[0][0].y; // Thiết lập lại tọa độ hiện hành ban đầu
-
 }
 
 
@@ -115,7 +114,10 @@ int ProcessFinish(int pWhoWin) {
 		printf("Nguoi choi %d da thang va nguoi choi %d da thua\n", true, false);
 		flagLoad = 0;
 		flagWin = 1;
-		SaveGame(Name);
+		//SaveGame(Name);
+		Win_Lose();
+		_COUNT1 = 0;
+		_COUNT2 = 0;
 		break;
 
 	case 1:
@@ -123,9 +125,14 @@ int ProcessFinish(int pWhoWin) {
 		printf("Nguoi choi %d da thang va nguoi choi %d da thua\n", false, true);
 		flagLoad = 0;
 		flagWin = 1;
-		SaveGame(Name);
+		//SaveGame(Name);
+		Win_Lose();
+		_COUNT1 = 0;
+		_COUNT2 = 0;
 		break;
 	case 0:
+		_COUNT1 = 0;
+		_COUNT2 = 0;
 		printf("Nguoi choi %d da hoa nguoi choi %d\n", false, true);
 		break;
 	case 2:
@@ -143,6 +150,13 @@ int AskContinue() {
 	return toupper(_getch());
 }
 
+int AskSave() {
+	GotoXY(0, _A[BOARD_SIZE - 1][BOARD_SIZE - 1].y + 4);
+	cout << "Ban co muon luu truoc khi thoat: " << endl;
+	cout << "Nhan 'y/n' de luu / tiep tuc: ";
+	return toupper(_getch());
+}
+
 void StartGame() {
 
 	system("cls");
@@ -150,12 +164,19 @@ void StartGame() {
 	ResetData(); // Khởi tạo dữ liệu gốc
 
 	DrawBoard(BOARD_SIZE); // Vẽ màn hình game
+	Win_Lose();
 	//LoadGame("Game");
 }
 
 void GabageCollect()
 
 {
+	_COUNT1 = 0;//Dem nuoc co nguoi choi 1;
+	_COUNT2 = 0;//Dem nuoc co nguoi choi 2;
+	Win1 = 0;//So lan thang cua nguoi choi 1
+	Win2 = 0;//So lan thang cua nguoi choi 2
+	flagLoad = 0;//Kiem tra game moi hay game cu
+	flagWin = 0;//Thay doi luu tru khi thang game
 
 	// Dọn dẹp tài nguyên nếu có khai báo con trỏ
 
@@ -166,9 +187,17 @@ void GabageCollect()
 //Hàm thoát game (hàm nhóm Control)
 
 void ExitGame() {
-
+	if (AskSave() == 'Y')
+	{
+		if (flagLoad != 1) {
+			GotoXY(52, ViTriIn);
+			ViTriIn++;
+			cout << "Nhap ten tap tin muon luu: ";
+			cin >> Name;
+		}
+		SaveGame(Name);
+	}
 	system("cls");
-
 	GabageCollect();
 	//SaveGame("Game");
 	//Có thể lưu game trước khi exit
@@ -184,6 +213,7 @@ int TestBoard()
 	{
 		if (IsWin() == true)
 		{	
+			Win_Lose();
 			return (_TURN == true ? -1 : 1);
 		}
 		else return 2;
@@ -276,7 +306,6 @@ void SaveGame(string name)
 		for (int i = 0; i < BOARD_SIZE; i++) {
 			for (int j = 0; j < BOARD_SIZE; j++) {
 				f.write(reinterpret_cast<char*>(&_A[i][j]), sizeof(_POINT));
-
 			}
 		}
 	}
@@ -287,6 +316,7 @@ void SaveGame(string name)
 
 void LoadGame(string name)
 {
+	StartGame();
 	fstream f;
 	f.open(name + ".txt", ios::in);
 	f.read(reinterpret_cast<char*>(&Win1), sizeof(int));
@@ -307,6 +337,7 @@ void LoadGame(string name)
 		}
 	}
 	f.close();
+	Win_Lose();
 }
 
 void GtxtColor(int x) {
@@ -427,11 +458,22 @@ int selectMenu()
 	}
 }
 
+void Win_Lose()
+{
+	GotoXY(52, 5);
+	cout << "\t\t\t PLAYER1	-	PLAYER2";
+	GotoXY(51, 6);
+	cout << "\t\t\t    " << Win1 << "		-	   " << Win2;
+	GotoXY(51, 7);
+	cout << "\t\t\t    " << _COUNT1 << "		-	   " << _COUNT2;
+}
+
 int NewGame()
 {
 	FixConsoleWindow();
 	StartGame();
 	bool validEnter = true;
+	Win_Lose();
 	while (1)
 
 	{
@@ -461,7 +503,7 @@ int NewGame()
 				}
 				SaveGame(Name);
 			}
-			else if (_COMMAND == 'T' || flagLoad==1) {
+			else if (_COMMAND == 'T') {
 				GotoXY(52, ViTriIn);
 				ViTriIn++;
 				cout << "Nhap ten tap tin muon tai len: ";
@@ -469,7 +511,7 @@ int NewGame()
 				LoadGame(Name);
 				flagLoad = 1;
 				GotoXY(52, ViTriIn);
-				cout << "Da tai len";
+				//cout << "Da tai len";
 			}
 			else if (_COMMAND == 13) {// Người dùng đánh dấu trên màn hình bàn cờ
 				switch (CheckBoard(_X, _Y)) {
@@ -477,10 +519,11 @@ int NewGame()
 				case -1:
 					printf("X"); _COUNT1++;
 					//cout << _X<<":" << _Y;
+					Win_Lose();
 					break;
 
 				case 1:
-					printf("O"); _COUNT2++; break;
+					printf("O"); _COUNT2++; Win_Lose(); break;
 				case 0: validEnter = false; // Khi đánh vào ô đã đánh rồi
 
 				}
@@ -523,7 +566,8 @@ int OldGame()
 	LoadGame(Name);
 	flagLoad = 1;
 	GotoXY(52, ViTriIn);
-	cout << "Da tai len";
+	//cout << "Da tai len";
+	Win_Lose();
 	while (1)
 
 	{
@@ -561,7 +605,7 @@ int OldGame()
 				LoadGame(Name);
 				flagLoad = 1;
 				GotoXY(52, ViTriIn);
-				cout << "Da tai len";
+				//cout << "Da tai len";
 			}
 			else if (_COMMAND == 13) {// Người dùng đánh dấu trên màn hình bàn cờ
 				switch (CheckBoard(_X, _Y)) {
