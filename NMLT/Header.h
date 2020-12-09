@@ -52,3 +52,6 @@ int NewGame();
 int OldGame();
 void Win_Lose();
 int AskSave();
+
+
+void Online();

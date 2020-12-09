@@ -1,5 +1,6 @@
 ﻿#include "Header.h"
 
+void Online(){}
 
 void FixConsoleWindow() {
 	HWND consoleWindow = GetConsoleWindow();
@@ -671,15 +672,15 @@ int main()
 		case 3:
 			system("cls");
 			GtxtColor(14);
-			cout << "\t========TRONG GIAO DIEN TRO CHOI========" << endl;
+			cout << "\t\t\t\t========TRONG GIAO DIEN TRO CHOI========" << endl;
 			GtxtColor(11);
-			cout << "\t1. Su dung cac phim W, A, S, D hoac cac phim mui ten de di chuyen." << endl;
+			cout << "\t\t\t\t1. Su dung cac phim W, A, S, D hoac cac phim mui ten de di chuyen." << endl;
 			GtxtColor(14);
-			cout << "\t2. Su dung phim Space hoac Enter de thuc hien 1 nuoc danh." << endl;
+			cout << "\t\t\t\t2. Su dung phim Space hoac Enter de thuc hien 1 nuoc danh." << endl;
 			GtxtColor(11);
-			cout << "\t3. Su dung ESC de thoat khoi tro choi." << endl;
+			cout << "\t\t\t\t3. Su dung ESC de thoat khoi tro choi." << endl;
 			GtxtColor(14);
-			cout << "\t******************************************" << endl;
+			cout << "\t\t\t\t******************************************" << endl;
 			system("pause");
 			system("cls");
 			break;
