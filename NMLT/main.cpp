@@ -697,4 +697,4 @@ int main()
 }
 
 
-
+void test(){}
